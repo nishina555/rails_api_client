@@ -8,11 +8,12 @@ services:
       - .:/rails6_api_mysql8 # アプリケーションファイルの同期
     depends_on:
       - db
-    command: ["rails", "server", "-b", "0.0.0.0"]
+    command: ["./wait-for-it.sh", "db:3306", "--", "./start.sh"]
   db: # MySQLが起動するコンテナ
     image: mysql:8.0.21
     volumes:
       - mysql_data:/var/lib/mysql # データの永続化
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     command: --default-authentication-plugin=mysql_native_password # 認証方式を8系以前のものにする。
     environment:
       MYSQL_USER: 'webuser'
