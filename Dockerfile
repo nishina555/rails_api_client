@@ -1,10 +1,10 @@
 FROM ruby:2.7.1
 
-# 作業ディレクトリを/rails6_api_mysql8に指定
-WORKDIR /rails6_api_mysql8
+# 作業ディレクトリを/rails_api_clientに指定
+WORKDIR /rails_api_client
 
 # ローカルのGemfileをDokcerにコピー
-COPY Gemfile* /rails6_api_mysql8/
+COPY Gemfile* /rails_api_client/
 
-# /rails6_api_mysql8ディレクトリ上でbundle install
+# /rails_api_clientディレクトリ上でbundle install
 RUN bundle install

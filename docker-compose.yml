@@ -5,7 +5,7 @@ services:
     ports:
       - '3000:3000' # localhostの3000ポートでアクセスできるようにする
     volumes:
-      - .:/rails6_api_mysql8 # アプリケーションファイルの同期
+      - .:/rails_api_client # アプリケーションファイルの同期
     depends_on:
       - db
     command: ["./wait-for-it.sh", "db:3306", "--", "./start.sh"]
@@ -19,6 +19,6 @@ services:
       MYSQL_USER: 'webuser'
       MYSQL_PASSWORD: 'webpass'
       MYSQL_ROOT_PASSWORD: 'pass'
-      MYSQL_DATABASE: 'rails6_api_mysql8_development'
+      MYSQL_DATABASE: 'rails_api_client_development'
 volumes:
   mysql_data: # データボリュームの登録
