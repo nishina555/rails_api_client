@@ -1,9 +1,9 @@
 class QiitaApiClient
-  # class HTTPError < StandardError
-  #   def initialize(response)
-  #     super "code=#{response.code} body=#{response.body}"
-  #   end
-  # end
+  class HTTPError < StandardError
+    def initialize(response)
+      super "code=#{response.code} body=#{response.body}"
+    end
+  end
 
   def initialize
     @token = 'hoge'
@@ -21,8 +21,8 @@ class QiitaApiClient
     when Net::HTTPSuccess
       JSON.parse(response.body)
     else
-      raise "code= #{response.code}, body = #{response.body}"
-      # raise QiitaApiClient::HTTPError.new(response)
+      # raise "code= #{response.code}, body = #{response.body}"
+      raise QiitaApiClient::HTTPError.new(response)
     end
   end
 
