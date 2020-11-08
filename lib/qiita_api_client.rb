@@ -2,6 +2,7 @@ class QiitaApiClient
   def initialize
     @token = Rails.application.credentials.qiita[:token]
   end
+
   def get_items
     req = Net::HTTP::Get.new(
       '/api/v2/items',
@@ -13,22 +14,27 @@ class QiitaApiClient
     JSON.parse(@qiita_items)
   end
 
-  # class << self
-  #   def get_items
-  #     # require 'net/http'
-  #     uri = URI.parse('https://qiita.com')
-  #     http = Net::HTTP.new(uri.host, uri.port)
-  #     http.use_ssl = true
-  #     req = Net::HTTP::Get.new(
-  #       '/api/v2/items',
-  #       'Authorization' => "Bearer #{Rails.application.credentials.qiita[:token]}"
-  #     )
-  #     http.request(req)
-  #     res = http.request(req)
-  #     @qiita_items = res.body
-  #     JSON.parse(@qiita_items)
-  #   end
-  # end
+  class << self
+    def client
+      QiitaApiClient.new
+    end
+
+    def get_items
+      # require 'net/http'
+      client.get_items
+      # uri = URI.parse('https://qiita.com')
+      # http = Net::HTTP.new(uri.host, uri.port)
+      # http.use_ssl = true
+      # req = Net::HTTP::Get.new(
+      #   '/api/v2/items',
+      #   'Authorization' => "Bearer #{Rails.application.credentials.qiita[:token]}"
+      # )
+      # http.request(req)
+      # res = http.request(req)
+      # @qiita_items = res.body
+      # JSON.parse(@qiita_items)
+    end
+  end
 
   private
   def http_client
