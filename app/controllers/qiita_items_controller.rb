@@ -18,6 +18,7 @@ class QiitaItemsController < ApplicationController
     # response_json = qiita_client.get_items
     response_json = QiitaApiClient.get_items
     # render json: response_json
+    # レスポンスを簡略化するため、titleプロパティのみ返すようにしている
     render json: response_json.map {|item| item.slice('title') }
   end
 end
