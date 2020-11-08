@@ -6,8 +6,8 @@ class QiitaApiClient
   end
 
   def initialize
-    @token = 'hoge'
-    # @token = Rails.application.credentials.qiita[:token]
+    # @token = 'hoge'
+    @token = Rails.application.credentials.qiita[:token]
   end
 
   def get_items

@@ -17,6 +17,7 @@ class QiitaItemsController < ApplicationController
     # qiita_client = QiitaApiClient.new
     # response_json = qiita_client.get_items
     response_json = QiitaApiClient.get_items
-    render json: response_json
+    # render json: response_json
+    render json: response_json.map {|item| item.slice('title') }
   end
 end
