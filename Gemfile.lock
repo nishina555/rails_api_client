@@ -66,6 +66,8 @@ GEM
     faraday (1.1.0)
       multipart-post (>= 1.2, < 3)
       ruby2_keywords
+    faraday_middleware (1.0.0)
+      faraday (~> 1.0)
     ffi (1.13.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -155,6 +157,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
   faraday
+  faraday_middleware
   listen (~> 3.2)
   mysql2 (>= 0.4.4)
   puma (~> 4.1)
