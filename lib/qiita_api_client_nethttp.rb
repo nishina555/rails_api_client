@@ -21,13 +21,13 @@ class QiitaApiClientNethttp
     when Net::HTTPSuccess
       JSON.parse(response.body)
     else
-      raise QiitaApiClient::HTTPError.new(response)
+      raise QiitaApiClientNethttp::HTTPError.new(response)
     end
   end
 
   class << self
     def client
-      QiitaApiClient.new
+      QiitaApiClientNethttp.new
     end
 
     def get_items
