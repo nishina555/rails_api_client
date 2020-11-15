@@ -2,7 +2,6 @@
 class QiitaApiClient
   class HTTPError < StandardError
     def initialize(response)
-      p "#{response.body}"
       super "status=#{response.status} body=#{response.body}"
     end
   end

@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'QiitaApiClient' do
+  let(:qiita_base_uri) { 'https://qiita.com/api/v2' }
   before do
     WebMock.enable!
     allow(Rails.application.credentials).to receive(:qiita).and_return({token: '123'})
@@ -11,7 +12,7 @@ describe 'QiitaApiClient' do
     context '成功' do
       let(:response_body) { [{ "title": "test" }].to_json }
       before do
-        WebMock.stub_request(:get, "https://qiita.com/api/v2/items").
+        WebMock.stub_request(:get, "#{qiita_base_uri}/items").
           with(
             headers: {'Authorization' => "Bearer 123"}
           ).
@@ -29,7 +30,7 @@ describe 'QiitaApiClient' do
     context '失敗' do
       let(:response_body) { { "message": "error_message", "type": "error_type" }.to_json }
       before do
-        WebMock.stub_request(:get, "https://qiita.com/api/v2/items").
+        WebMock.stub_request(:get, "#{qiita_base_uri}/items").
           with(
             headers: {'Authorization' => "Bearer 123"}
           ).
@@ -40,7 +41,8 @@ describe 'QiitaApiClient' do
           )
       end
       it '例外が発生すること' do
-        expect(subject).to raise_error(QiitaApiClient::HTTPError, "status=500 body=#{JSON.parse(response_body)}")
+        # 例外のテストはexpect()ではなくexpect{}なので注意
+        expect{subject}.to raise_error(QiitaApiClient::HTTPError, "status=500 body=#{JSON.parse(response_body)}")
       end
     end
   end
