@@ -1,8 +1,11 @@
 
 class QiitaApiClient
   class HTTPError < StandardError
-    def initialize(response)
-      super "status=#{response.status} body=#{response.body}"
+    # def initialize(response)
+    #   super "status=#{response.status} body=#{response.body}"
+    # end
+    def initialize(message)
+      super "connection failed: #{message}"
     end
   end
 
@@ -19,13 +22,22 @@ class QiitaApiClient
     end
 
     def get_items
-      response = connection.get(
-        '/api/v2/items'
-      )
-      if response.success?
+    #   response = connection.get(
+    #     '/api/v2/items'
+    #   )
+    #   if response.success?
+    #     response.body
+    #   else
+    #     raise QiitaApiClient::HTTPError.new(response)
+    #   end
+    # end
+      begin
+        response = connection.get(
+          '/api/v2/items'
+        )
         response.body
-      else
-        raise QiitaApiClient::HTTPError.new(response)
+      rescue Faraday::ConnectionFailed => e
+        raise QiitaApiClient::HTTPError.new(e.message)
       end
     end
   end
