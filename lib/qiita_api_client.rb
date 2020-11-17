@@ -21,6 +21,15 @@ class QiitaApiClient
       end
     end
 
+    def search_items(word)
+      # item_titles = QiitaApiClient.get_items.pluck('title')
+      response = connection.get(
+        '/api/v2/items'
+      )
+      item_titles = response.body.pluck('title')
+      item_titles.select { |title| title.include? "#{word}" }
+    end
+
     def get_items
     #   response = connection.get(
     #     '/api/v2/items'

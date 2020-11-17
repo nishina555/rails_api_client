@@ -7,6 +7,27 @@ describe 'QiitaApiClient' do
     allow(Rails.application.credentials).to receive(:qiita).and_return({token: '123'})
   end
 
+  describe '.search_items' do
+    before do
+      connection_mock = double('connection_mock')
+      response_mock = double('response_mock', status: 200, body: [{ "title" => "test" }])
+      allow(connection_mock).to receive(:get).and_return(response_mock)
+      allow(QiitaApiClient).to receive(:connection).and_return(connection_mock)
+    end
+    context '検索がヒットした場合' do
+      it 'データが取得できること' do
+        response = QiitaApiClient.search_items('test')
+        expect(response.count).to eq 1
+      end
+    end
+    context '検索がヒットしない場合' do
+      it 'データが取得できないこと' do
+        response = QiitaApiClient.search_items('hoge')
+        expect(response.count).to eq 0
+      end
+    end
+  end
+
   describe '.get_items' do
     subject { QiitaApiClient.get_items }
     context '成功' do
