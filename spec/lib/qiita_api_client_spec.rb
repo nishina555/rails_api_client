@@ -7,22 +7,42 @@ describe 'QiitaApiClient' do
     allow(Rails.application.credentials).to receive(:qiita).and_return({token: '123'})
   end
 
+  # describe '.search_items' do
+  #   # item_titles = QiitaApiClient.get_items.pluck('title')の場合
+  #   before do
+  #     allow(QiitaApiClient).to receive(:get_items).and_return([{ "title" => "test" }])
+  #   end
+  #   context '検索がヒットした場合' do
+  #     it 'データが取得できること' do
+  #       response = QiitaApiClient.search_items('test')
+  #       expect(response.count).to eq 1
+  #     end
+  #   end
+  #   context '検索がヒットしない場合' do
+  #     it 'データが取得できないこと' do
+  #       response = QiitaApiClient.search_items('hoge')
+  #       expect(response.count).to eq 0
+  #     end
+  #   end
+  # end
+
   describe '.search_items' do
+    let(:response_body) { [{ "title" => "hoge" }, { "title" => "fuga" } ] }
     before do
       connection_mock = double('connection_mock')
-      response_mock = double('response_mock', status: 200, body: [{ "title" => "test" }])
+      response_mock = double('response_mock', status: 200, body: response_body)
       allow(connection_mock).to receive(:get).and_return(response_mock)
       allow(QiitaApiClient).to receive(:connection).and_return(connection_mock)
     end
     context '検索がヒットした場合' do
       it 'データが取得できること' do
-        response = QiitaApiClient.search_items('test')
+        response = QiitaApiClient.search_items('hoge')
         expect(response.count).to eq 1
       end
     end
     context '検索がヒットしない場合' do
       it 'データが取得できないこと' do
-        response = QiitaApiClient.search_items('hoge')
+        response = QiitaApiClient.search_items('xxx')
         expect(response.count).to eq 0
       end
     end
