@@ -21,13 +21,11 @@ class QiitaApiClient
       end
     end
 
-    def search_items(word)
+    def search_item_titles(word)
       # item_titles = QiitaApiClient.get_items.pluck('title')
-      response = connection.get(
-        '/api/v2/items'
-      )
-      item_titles = response.body.pluck('title')
-      item_titles.select { |title| title.include? "#{word}" }
+      response = connection.get('/api/v2/items')
+      item_titles = response.body.pluck('title') # レスポンスボディのうちtitleプロパティのみを抽出
+      item_titles.select { |title| title.include? "#{word}" } # wordが含まれるtitleのみを返す
     end
 
     def get_items

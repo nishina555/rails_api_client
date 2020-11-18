@@ -7,8 +7,30 @@ describe 'QiitaApiClient' do
     allow(Rails.application.credentials).to receive(:qiita).and_return({token: '123'})
   end
 
+  describe '.search_item_titles' do
+    let(:response_body) { [{ "title" => "hoge" }, { "title" => "fuga" } ] }
+    before do
+      connection_mock = double('connection_mock')
+      response_mock = double('response_mock', status: 200, body: response_body)
+      allow(connection_mock).to receive(:get).and_return(response_mock)
+      allow(QiitaApiClient).to receive(:connection).and_return(connection_mock)
+    end
+    context '検索がヒットした場合' do
+      it 'データが取得できること' do
+        response = QiitaApiClient.search_item_titles('hoge')
+        expect(response.count).to eq 1
+      end
+    end
+    context '検索がヒットしない場合' do
+      it 'データが取得できないこと' do
+        response = QiitaApiClient.search_item_titles('xxx')
+        expect(response.count).to eq 0
+      end
+    end
+  end
+
+  # item_titles = QiitaApiClient.get_items.pluck('title')の場合
   # describe '.search_items' do
-  #   # item_titles = QiitaApiClient.get_items.pluck('title')の場合
   #   before do
   #     allow(QiitaApiClient).to receive(:get_items).and_return([{ "title" => "test" }])
   #   end
@@ -25,28 +47,6 @@ describe 'QiitaApiClient' do
   #     end
   #   end
   # end
-
-  describe '.search_items' do
-    let(:response_body) { [{ "title" => "hoge" }, { "title" => "fuga" } ] }
-    before do
-      connection_mock = double('connection_mock')
-      response_mock = double('response_mock', status: 200, body: response_body)
-      allow(connection_mock).to receive(:get).and_return(response_mock)
-      allow(QiitaApiClient).to receive(:connection).and_return(connection_mock)
-    end
-    context '検索がヒットした場合' do
-      it 'データが取得できること' do
-        response = QiitaApiClient.search_items('hoge')
-        expect(response.count).to eq 1
-      end
-    end
-    context '検索がヒットしない場合' do
-      it 'データが取得できないこと' do
-        response = QiitaApiClient.search_items('xxx')
-        expect(response.count).to eq 0
-      end
-    end
-  end
 
   describe '.get_items' do
     subject { QiitaApiClient.get_items }
@@ -68,6 +68,19 @@ describe 'QiitaApiClient' do
         expect(subject).to eq(JSON.parse(response_body))
       end
     end
+
+    context '失敗' do
+      before do
+        WebMock.stub_request(:get, "#{qiita_base_uri}/items").
+          to_raise(Faraday::ConnectionFailed.new("some error"))
+      end
+      it '例外が発生すること' do
+        # 例外のテストはexpect()ではなくexpect{}なので注意
+        expect{subject}.to raise_error(QiitaApiClient::HTTPError, "connection failed: some error")
+      end
+    end
+
+    # `else raise`で例外処理を発生させるロジックの場合
     # context '失敗' do
     #   let(:response_body) { { "message": "error_message", "type": "error_type" }.to_json }
     #   before do
@@ -86,15 +99,5 @@ describe 'QiitaApiClient' do
     #     expect{subject}.to raise_error(QiitaApiClient::HTTPError, "status=500 body=#{JSON.parse(response_body)}")
     #   end
     # end
-    context '失敗' do
-      before do
-        WebMock.stub_request(:get, "#{qiita_base_uri}/items").
-          to_raise(Faraday::ConnectionFailed.new("some error"))
-      end
-      it '例外が発生すること' do
-        # 例外のテストはexpect()ではなくexpect{}なので注意
-        expect{subject}.to raise_error(QiitaApiClient::HTTPError, "connection failed: some error")
-      end
-    end
   end
 end
